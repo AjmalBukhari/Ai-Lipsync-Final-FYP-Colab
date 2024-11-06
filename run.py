@@ -41,21 +41,20 @@ if DEBUG:
     app.logger.info('ASSETS_ROOT      = ' + app_config.ASSETS_ROOT )
 
 
-# Set up ngrok only if in debug mode
-if DEBUG:
-    # Kill any existing ngrok processes to reset before starting a new tunnel
-    subprocess.call(['pkill', 'ngrok'])
 
-    # Set your ngrok authentication token (replace with your actual token)
-    NGROK_AUTH_TOKEN = os.getenv("NGROK_AUTH_TOKEN", "63Rprg8vfopGku86TmQz7_5B1i8o1FQqwwKs6N6ucwV")
-    ngrok.set_auth_token(NGROK_AUTH_TOKEN)
+# Kill any existing ngrok processes to reset before starting a new tunnel
+subprocess.call(['pkill', 'ngrok'])
 
-    # Define your reserved domain (replace with your actual domain)
-    RESERVED_DOMAIN = os.getenv("NGROK_RESERVED_DOMAIN", "insect-intimate-terribly.ngrok-free.app")
+# Set your ngrok authentication token (replace with your actual token)
+NGROK_AUTH_TOKEN = os.getenv("NGROK_AUTH_TOKEN", "63Rprg8vfopGku86TmQz7_5B1i8o1FQqwwKs6N6ucwV")
+ngrok.set_auth_token(NGROK_AUTH_TOKEN)
 
-    # Open a tunnel with the reserved domain
-    ngrok_tunnel = ngrok.connect(addr="5000", host_header="rewrite", domain=RESERVED_DOMAIN)
-    app.logger.info("ngrok tunnel \"{}\" -> \"http://127.0.0.1:5000\"".format(ngrok_tunnel.public_url))
+# Define your reserved domain (replace with your actual domain)
+RESERVED_DOMAIN = os.getenv("NGROK_RESERVED_DOMAIN", "insect-intimate-terribly.ngrok-free.app")
+
+# Open a tunnel with the reserved domain
+ngrok_tunnel = ngrok.connect(addr="5000", host_header="rewrite", domain=RESERVED_DOMAIN)
+app.logger.info("ngrok tunnel \"{}\" -> \"http://127.0.0.1:5000\"".format(ngrok_tunnel.public_url))
 
 if __name__ == "__main__":
     app.run()
