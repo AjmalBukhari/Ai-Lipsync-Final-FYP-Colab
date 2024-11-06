@@ -1,0 +1,190 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} User Profile {% endblock %}
+
+{% block content %}
+
+<div class="content">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="title">Edit Profile</h5>
+        </div>
+        <div class="card-body">
+          <form action="{{ url_for('authentication_blueprint.update_profile') }}" method="POST">
+            {% if not current_user.email %}
+            <div class="row">
+              <div class="col-md-6 pr-md-1">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert" >
+                  <p class="mb-0">Please add an email address.</p>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            <div class="row">
+              <div class="col-md-6 pr-md-1">
+                <div class="form-group">
+                  <label class="form-label {% if not current_user.email %} text-danger {% endif %}">Email
+                    Address</label>
+                  <input type="email" name="email" class="form-control" placeholder="Your email Here"
+                    value="{{ current_user.email }}" readonly>
+                </div>
+              </div>
+              <div class="col-md-6 pr-md-1">
+                <div class="form-group">
+                  <label>Username</label>
+                  <input type="text" name="username" class="form-control" value="{{ current_user.username }}" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 pr-md-1">
+                <div class="form-group">
+                  <label>First Name</label>
+                  <input type="text" name="first_name" class="form-control" placeholder="First Name"
+                    value="{{ current_user.first_name }}">
+                </div>
+              </div>
+              <div class="col-md-6 pl-md-1">
+                <div class="form-group">
+                  <label>Last Name</label>
+                  <input type="text" name="last_name" class="form-control" placeholder="Last Name"
+                    value="{{ current_user.last_name }}">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label>Address</label>
+                  <input type="text" name="address" class="form-control" placeholder="Home Address"
+                    value="{{ current_user.address }}">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 pr-md-1">
+                <div class="form-group">
+                  <label>City</label>
+                  <input type="text" name="city" class="form-control" placeholder="City"
+                    value="{{ current_user.city }}">
+                </div>
+              </div>
+              <div class="col-md-4 px-md-1">
+                <div class="form-group">
+                  <label>Country</label>
+                  <input type="text" name="country" class="form-control" placeholder="Country"
+                    value="{{ current_user.country }}">
+                </div>
+              </div>
+              <div class="col-md-4 pl-md-1">
+                <div class="form-group">
+                  <label>Postal Code</label>
+                  <input type="number" name="postal_code" class="form-control" placeholder="ZIP Code"
+                    value="{{ current_user.postal_code }}">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label>About Me</label>
+                  <textarea name="about_me" rows="4" cols="80" class="form-control"
+                    placeholder="Here can be your description">{{ current_user.about_me }}</textarea>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-fill btn-primary">Save</button>
+            </div>
+          </form>
+          <form action="{{ url_for('authentication_blueprint.delete_account') }}" method="POST" style="display:inline;">
+            <button type="submit" class="btn btn-fill btn-danger">Delete Account</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card card-user">
+        <div class="card-body">
+          <p class="card-text">
+          <div class="author">
+            <div class="block block-one"></div>
+            <div class="block block-two"></div>
+            <div class="block block-three"></div>
+            <div class="block block-four"></div>
+            <a href="javascript:void(0)">
+              <!-- Dynamically set the image source and add a click event -->
+              <img class="avatar" id="profile-image"
+                src="/user_data/{{ current_user.username }}/profile/dp/profile_image.jpg" alt="Profile Picture"
+                style="cursor: pointer;">
+              <h5 class="title">{{ current_user.first_name }} {{ current_user.last_name }}</h5>
+            </a>
+            <p class="description">
+              Developer
+            </p>
+          </div>
+          </p>
+          <div class="card-description" style="justify-content: center;">
+            {{ current_user.about_me }}
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="button-container">
+            <button href="https://www.facebook.com/PUBG.anonYmous/" class="btn btn-icon btn-round btn-facebook">
+              <i class="fab fa-facebook"></i>
+            </button>
+            <button href="https://www.instagram.com/who_am_i_737/" class="btn btn-icon btn-round btn-instagram">
+              <i class="fab fa-instagram"></i>
+            </button>
+            <button href="https://wa.link/oaj1cc" class="btn btn-icon btn-round btn-whatsapp">
+              <i class="fab fa-whatsapp"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="image-upload" accept="image/*" style="display: none;" onchange="uploadImage(event)">
+
+{% endblock content %}
+
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<script>
+  document.getElementById('profile-image').addEventListener('click', function () {
+    document.getElementById('image-upload').click();
+  });
+
+  function uploadImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('profile_image', file);
+  
+      fetch('/upload-profile-image', {
+        method: 'POST',
+        body: formData,
+      })
+        .then(response => {
+          if (response.redirected) {
+            // Redirected responses indicate the use of flash messages
+            window.location.href = response.url;
+          } else {
+            alert('An unexpected error occurred. Please try again.');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while uploading the image.');
+        });
+    }
+  }
+</script>
+
+{% endblock javascripts %}

@@ -1,0 +1,205 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Home {% endblock %}
+
+{% block stylesheets %}
+<style>
+  .card-header {
+    justify-content: center;
+  }
+
+  .video-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    margin-top: 20px;
+  }
+
+  .video-card {
+    margin: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 300px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+  }
+
+  .video-card:hover {
+    border: 1px solid pink;
+  }
+
+  .video-card video {
+    width: 100%;
+    height: auto;
+  }
+
+  .custom-controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px;
+    background-color: #f8f9fa;
+  }
+
+  .column {
+    flex: 1;
+    margin: 5px;
+  }
+
+  .custom-controls button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #007bff;
+    margin-bottom: 10px;
+  }
+
+  .timeline-slider {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .volume-slider {
+    width: 100px;
+  }
+
+  .custom-controls p {
+    color: #007bff;
+  }
+
+  #videoModal {
+    position: fixed;
+  }
+
+  .modal-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #007bff;
+  }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card card-plain">
+        <div class="card-header">
+          <h1>Welcome to the AI Lipsync Web App</h1>
+        </div>
+        <div class="card-body">
+          <h5>Video Gallery</h5>
+          <div class="video-gallery">
+            {% if videos %}
+            {% for video in videos %}
+            <div class="video-card" data-video-url="{{ url_for('static', filename='videos/' + video) }}"
+              onclick="openVideoModal(this)">
+              <video id="video-{{ loop.index }}" preload="metadata">
+                <source src="{{ url_for('static', filename='videos/' + video) }}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <div class="card-body">
+                <h5 class="card-title">{{ video.split('.')[0] }}</h5>
+              </div>
+            </div>
+
+            <!-- Video Modal -->
+            <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="videoModalLabel">{{ video.split('.')[0] }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <video id="popup-video" controls style="width: 100%;">
+                      <source src="" type="video/mp4">
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>No videos available.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+
+<script>
+  function togglePlay(videoId, buttonId) {
+    var video = document.getElementById(videoId);
+    var button = document.getElementById(buttonId);
+    if (video.paused) {
+      video.play();
+      button.textContent = 'Resume'; // Change button text to 'Resume'
+    } else {
+      video.pause();
+      button.textContent = 'Play'; // Change button text to 'Play'
+    }
+  }
+
+  function setVolume(videoId, volume) {
+    var video = document.getElementById(videoId);
+    video.volume = volume;
+  }
+
+  function updateTimeline(videoId, timelineId) {
+    var video = document.getElementById(videoId);
+    var timeline = document.getElementById(timelineId);
+    // Update the slider value to reflect the video's current time
+    timeline.value = video.currentTime;
+  }
+
+  function setTimeline(videoId, timelineId) {
+    var video = document.getElementById(videoId);
+    var timeline = document.getElementById(timelineId);
+    // Set the max value of the timeline slider based on video duration
+    timeline.max = video.duration;
+    // Initialize the slider value to 0
+    timeline.value = 0;
+  }
+
+  function seekVideo(videoId, value) {
+    var video = document.getElementById(videoId);
+    video.currentTime = value; // Seek the video to the selected time
+  }
+
+  function openVideoModal(element) {
+    var videoSrc = element.getAttribute('data-video-url');
+    var video = document.getElementById('popup-video');
+    video.src = videoSrc;
+    $('#videoModal').modal('show');
+
+    // Play video when modal is shown
+    $('#videoModal').on('shown.bs.modal', function () {
+      video.play();
+    });
+
+    // Pause video when modal is hidden
+    $('#videoModal').on('hide.bs.modal', function () {
+      video.pause();
+      video.currentTime = 0; // Reset video to the start when closing the modal
+    });
+    $('#videoModal').on('hidden.bs.modal', function () {
+      video.src = ''; // Reset the video source to avoid playback issues
+    });
+  }
+
+
+</script>
+{% endblock javascripts %}

@@ -1,0 +1,47 @@
+<div class="sidebar">
+    <!--
+          Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
+      -->
+    <div class="sidebar-wrapper">
+        <div class="logo">
+            <a href="javascript:void(0)" class="simple-text logo-mini">
+                FYP
+            </a>
+            <a href="javascript:void(0)" class="simple-text logo-normal">
+                Cybernation
+            </a>
+        </div>
+        <ul class="nav">
+            <li class="{% if 'index' in segment %} active {% endif %} ">
+                <a href="/">
+                    <i class="tim-icons icon-chart-pie-36"></i>
+                    <p>Home</p>
+                </a>
+            </li>
+            <li class="{% if 'Dashboard' in segment %} active {% endif %}">
+                <a href="/Dashboard.html">
+                    <i class="tim-icons icon-single-02"></i>
+                    <p>Dashboard</p>
+                </a>
+            </li>
+            <li class="{% if 'lipsync' in segment %} active {% endif %}">
+                <a href="/lipsync.html">
+                    <i class="tim-icons icon-atom"></i>
+                    <p>Lip Sync</p>
+                </a>
+            </li>
+            <li class="{% if 'about' in segment %} active {% endif %}">
+                <a href="/about.html">
+                    <i class="tim-icons icon-pin"></i>
+                    <p>About Us</p>
+                </a>
+            </li>
+            <li class="{% if 'contact' in segment %} active {% endif %}">
+                <a href="/contact.html">
+                    <i class="tim-icons icon-bell-55"></i>
+                    <p>Contact Us</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

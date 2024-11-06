@@ -1,0 +1,112 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row">
+        <!-- Videos Section -->
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-category">Videos</h5>
+                </div>
+                <div class="card-body">
+                    {% for video in videos %}
+                        <div>
+                            <a href="#" onclick="openMediaModal('{{ base_path }}/{{ video }}', 'video')">{{ video }}</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Audios Section -->
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-category">Audios</h5>
+                </div>
+                <div class="card-body">
+                    {% for audio in audios %}
+                        <div>
+                            <a href="#" onclick="openMediaModal('{{ base_path }}/{{ audio }}', 'audio')">{{ audio }}</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Output Section -->
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-category">Output</h5>
+                </div>
+                <div class="card-body">
+                    {% for output in outputs %}
+                        <div>
+                            <a href="#" onclick="openMediaModal('{{ base_path }}/{{ output }}', 'output')">{{ video }}</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Playing Media -->
+<div class="modal" id="mediaModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Media Player</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <video id="videoPlayer" controls style="display: none; width: 100%;">
+                    <source id="videoSource" src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <audio id="audioPlayer" controls style="display: none; width: 100%;">
+                    <source id="audioSource" src="" type="audio/mpeg">
+                    Your browser does not support the audio tag.
+                </audio>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+<script>
+    function openMediaModal(filePath, mediaType) {
+        const videoPlayer = document.getElementById('videoPlayer');
+        const audioPlayer = document.getElementById('audioPlayer');
+        
+        if (mediaType === 'video') {
+            videoPlayer.style.display = 'block';
+            audioPlayer.style.display = 'none';
+            document.getElementById('videoSource').src = filePath;
+            videoPlayer.load();
+            videoPlayer.play();
+        } else if (mediaType === 'audio') {
+            audioPlayer.style.display = 'block';
+            videoPlayer.style.display = 'none';
+            document.getElementById('audioSource').src = filePath;
+            audioPlayer.load();
+            audioPlayer.play();
+        }
+        
+        $('#mediaModal').modal('show');
+    }
+    
+    // Stop playing media when modal is closed
+    $('#mediaModal').on('hide.bs.modal', function() {
+        document.getElementById('videoPlayer').pause();
+        document.getElementById('audioPlayer').pause();
+    });
+</script>
+{% endblock javascripts %}
