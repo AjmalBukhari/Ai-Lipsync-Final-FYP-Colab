@@ -38,6 +38,7 @@ def login():
 
             base_dir = Path("apps") / "user_data"
             wav2lip_temp = Path("apps") / "temp"
+            wav2lip_models = Path("apps") / "models"
             user_dir = base_dir / username
             video_dir = user_dir / "video"
             audio_dir = user_dir / "audio"
@@ -47,7 +48,7 @@ def login():
             profile_dir = user_dir / "profile"
             dp_dir = profile_dir / "dp"
         
-            for directory in [base_dir, user_dir, video_dir, audio_dir, output_dir, trim_dir, logs_dir, profile_dir, dp_dir, wav2lip_temp]:
+            for directory in [base_dir, user_dir, video_dir, audio_dir, output_dir, trim_dir, logs_dir, profile_dir, dp_dir, wav2lip_temp, wav2lip_models]:
                 directory.mkdir(parents=True, exist_ok=True)
             
             log_file = logs_dir / "log.txt"
