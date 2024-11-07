@@ -37,7 +37,6 @@ def login():
             login_user(user)
 
             base_dir = Path("apps") / "user_data"
-            wav2lip_temp = "temp"
             user_dir = base_dir / username
             video_dir = user_dir / "video"
             audio_dir = user_dir / "audio"
