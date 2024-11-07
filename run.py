@@ -3,10 +3,10 @@ from flask_migrate import Migrate
 from flask_minify  import Minify
 from sys import exit
 
-from apps.config import config_dict
+from apps.config import config_dict, RESERVED_DOMAIN, ngrok
 from apps import create_app, db
 
-from pyngrok import ngrok
+
 import subprocess, logging
 
 
@@ -44,13 +44,6 @@ if DEBUG:
 
 # Kill any existing ngrok processes to reset before starting a new tunnel
 subprocess.call(['pkill', 'ngrok'])
-
-# Set your ngrok authentication token (replace with your actual token)
-NGROK_AUTH_TOKEN = os.getenv("NGROK_AUTH_TOKEN", "63Rprg8vfopGku86TmQz7_5B1i8o1FQqwwKs6N6ucwV")
-ngrok.set_auth_token(NGROK_AUTH_TOKEN)
-
-# Define your reserved domain (replace with your actual domain)
-RESERVED_DOMAIN = os.getenv("NGROK_RESERVED_DOMAIN", "insect-intimate-terribly.ngrok-free.app")
 
 # Open a tunnel with the reserved domain
 ngrok_tunnel = ngrok.connect(addr="5000", host_header="rewrite", domain=RESERVED_DOMAIN)

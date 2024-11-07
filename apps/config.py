@@ -1,7 +1,7 @@
 import os
 import random
 import string
-
+from pyngrok import ngrok
 
 class Config(object):
     basedir = os.path.abspath(os.path.dirname(__file__))
@@ -49,6 +49,13 @@ class Config(object):
     SESSION_COOKIE_HTTPONLY = True
     REMEMBER_COOKIE_HTTPONLY = True
     REMEMBER_COOKIE_DURATION = 3600
+
+    # Set your ngrok authentication token (replace with your actual token)
+    NGROK_AUTH_TOKEN = os.getenv("NGROK_AUTH_TOKEN", "63Rprg8vfopGku86TmQz7_5B1i8o1FQqwwKs6N6ucwV")
+    ngrok.set_auth_token(NGROK_AUTH_TOKEN)
+
+    # Define your reserved domain (replace with your actual domain)
+    RESERVED_DOMAIN = os.getenv("NGROK_RESERVED_DOMAIN", "insect-intimate-terribly.ngrok-free.app")
 
 class ProductionConfig(Config):
     DEBUG = False
