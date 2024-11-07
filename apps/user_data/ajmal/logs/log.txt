@@ -1,7 +1,3 @@
-2024-11-07 16:35:18, ajmal, registred successfully
-2024-11-07 16:35:23, ajmal, logged in successfully.
-
-2024-11-07 16:36:44, ajmal, logged in successfully.
-
-2024-11-07 16:37:06, ajmal, Logged out
+ajmal logged in successfully.
+2024-11-07 16:40:18, ajmal, logged in successfully.
 

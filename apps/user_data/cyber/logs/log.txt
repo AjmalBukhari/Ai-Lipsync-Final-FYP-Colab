@@ -1,5 +1,0 @@
-2024-11-07 16:37:14, cyber, registred successfully
-2024-11-07 16:37:40, cyber, logged in successfully.
-
-2024-11-07 16:37:43, cyber, in user.html
-2024-11-07 16:37:45, cyber, Delete Account.
