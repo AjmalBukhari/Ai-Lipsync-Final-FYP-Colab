@@ -3,9 +3,9 @@ from flask_migrate import Migrate
 from flask_minify  import Minify
 from sys import exit
 
-from apps.config import config_dict, RESERVED_DOMAIN, ngrok
+from apps.config import config_dict
 from apps import create_app, db
-
+from pyngrok import ngrok
 
 import subprocess, logging
 
@@ -16,6 +16,10 @@ DEBUG = (os.getenv('DEBUG', 'False') == 'True')
 # Set log level to WARNING to suppress info and debug messages
 # log = logging.getLogger('werkzeug')
 # log.setLevel(logging.WARNING)
+
+# Set a temporary XDG_RUNTIME_DIR if not defined to silence warnings
+if not os.getenv("XDG_RUNTIME_DIR"):
+    os.environ["XDG_RUNTIME_DIR"] = "/tmp"
 
 # The configuration
 get_config_mode = 'Debug' if DEBUG else 'Production'
@@ -43,7 +47,14 @@ if DEBUG:
 
 
 # Kill any existing ngrok processes to reset before starting a new tunnel
-subprocess.call(['pkill', 'ngrok'])
+# subprocess.call(['pkill', 'ngrok'])
+
+# Set your ngrok authentication token (replace with your actual token)
+NGROK_AUTH_TOKEN = os.getenv("NGROK_AUTH_TOKEN", "63Rprg8vfopGku86TmQz7_5B1i8o1FQqwwKs6N6ucwV")
+ngrok.set_auth_token(NGROK_AUTH_TOKEN)
+
+# Define your reserved domain (replace with your actual domain)
+RESERVED_DOMAIN = os.getenv("NGROK_RESERVED_DOMAIN", "insect-intimate-terribly.ngrok-free.app")
 
 # Open a tunnel with the reserved domain
 ngrok_tunnel = ngrok.connect(addr="5000", host_header="rewrite", domain=RESERVED_DOMAIN)
