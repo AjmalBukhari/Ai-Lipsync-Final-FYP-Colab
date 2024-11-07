@@ -17,10 +17,6 @@ DEBUG = (os.getenv('DEBUG', 'False') == 'True')
 # log = logging.getLogger('werkzeug')
 # log.setLevel(logging.WARNING)
 
-# Set a temporary XDG_RUNTIME_DIR if not defined to silence warnings
-if not os.getenv("XDG_RUNTIME_DIR"):
-    os.environ["XDG_RUNTIME_DIR"] = "/tmp"
-
 # The configuration
 get_config_mode = 'Debug' if DEBUG else 'Production'
 
