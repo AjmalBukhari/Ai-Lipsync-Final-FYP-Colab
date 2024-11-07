@@ -13,25 +13,51 @@ class Config(object):
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    USE_SQLITE  = True
+
     # # PostgreSQL Configuration
     # For local Database
-    # DB_ENGINE = 'postgresql'
-    # DB_USERNAME = 'postgres'
-    # DB_PASS = 'virus'
-    # DB_HOST = 'localhost'
-    # DB_PORT = '5432'
-    # DB_NAME = 'postgres'
+    DB_ENGINE = 'postgresql'
+    DB_USERNAME = 'postgres'
+    DB_PASS = 'virus'
+    DB_HOST = 'localhost'
+    DB_PORT = '5432'
+    DB_NAME = 'postgres'
     
     # For Supabase database (Online)
-    DB_ENGINE = 'postgresql'
-    DB_USERNAME = 'postgres.awgqqxtyhkvcstfkikan'
-    DB_PASS = 'VirusDB25625'
-    DB_HOST = 'aws-0-us-west-1.pooler.supabase.com'
-    DB_PORT = '5432'
-    DB_NAME = 'postgress'
+    # DB_ENGINE = 'postgresql'
+    # DB_USERNAME = 'postgres.awgqqxtyhkvcstfkikan'
+    # DB_PASS = 'VirusDB25625'
+    # DB_HOST = 'aws-0-us-west-1.pooler.supabase.com'
+    # DB_PORT = '5432'
+    # DB_NAME = 'postgres'
 
-    SQLALCHEMY_DATABASE_URI = f'{DB_ENGINE}://{DB_USERNAME}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
-    print("Database URL:", SQLALCHEMY_DATABASE_URI)
+    # SQLALCHEMY_DATABASE_URI = f'{DB_ENGINE}://{DB_USERNAME}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+    # print("Database URL:", SQLALCHEMY_DATABASE_URI)
+
+    if DB_ENGINE and DB_NAME and DB_USERNAME:
+
+        try:
+
+            SQLALCHEMY_DATABASE_URI = '{}://{}:{}@{}:{}/{}'.format(
+                DB_ENGINE,
+                DB_USERNAME,
+                DB_PASS,
+                DB_HOST,
+                DB_PORT,
+                DB_NAME
+            ) 
+
+            USE_SQLITE  = False
+
+        except Exception as e:
+
+            print('> Error: DBMS Exception: ' + str(e) )
+            print('> Fallback to SQLite ')    
+
+    if USE_SQLITE:
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db.sqlite3') 
+        print("Creating Sqlite DB: ", SQLALCHEMY_DATABASE_URI)
 
     # Assets Management
     ASSETS_ROOT = os.getenv('ASSETS_ROOT', '/static/assets')
