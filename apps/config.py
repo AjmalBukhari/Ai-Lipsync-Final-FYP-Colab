@@ -32,9 +32,6 @@ class Config(object):
     DB_PORT = '5432'
     DB_NAME = 'postgres'
 
-    # SQLALCHEMY_DATABASE_URI = f'{DB_ENGINE}://{DB_USERNAME}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
-    # print("Database URL:", SQLALCHEMY_DATABASE_URI)
-
     if DB_ENGINE and DB_NAME and DB_USERNAME:
 
         try:
@@ -53,7 +50,7 @@ class Config(object):
         except Exception as e:
 
             print('> Error: DBMS Exception: ' + str(e) )
-            print('> Fallback to SQLite ')    
+            print('> Fallback to SQLite ')
 
     if USE_SQLITE:
         SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db.sqlite3') 
