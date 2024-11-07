@@ -46,7 +46,7 @@ def login():
             profile_dir = user_dir / "profile"
             dp_dir = profile_dir / "dp"
         
-            for directory in [base_dir, user_dir, video_dir, audio_dir, output_dir, trim_dir, logs_dir, profile_dir, dp_dir, wav2lip_temp]:
+            for directory in [base_dir, user_dir, video_dir, audio_dir, output_dir, trim_dir, logs_dir, profile_dir, dp_dir]:
                 directory.mkdir(parents=True, exist_ok=True)
             
             log_file = logs_dir / "log.txt"
