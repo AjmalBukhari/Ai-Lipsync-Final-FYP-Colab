@@ -12,8 +12,8 @@ import logging
 DEBUG = (os.getenv('DEBUG', 'False') == 'True')
 
 # Set log level to WARNING to suppress info and debug messages
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.WARNING)
+# log = logging.getLogger('werkzeug')
+# log.setLevel(logging.WARNING)
 
 # The configuration
 get_config_mode = 'Debug' if DEBUG else 'Production'
