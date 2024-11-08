@@ -17,20 +17,20 @@ class Config(object):
 
     # # PostgreSQL Configuration
     # For local Database
-    # DB_ENGINE = 'postgresql'
-    # DB_USERNAME = 'postgres'
-    # DB_PASS = 'virus'
-    # DB_HOST = 'localhost'
-    # DB_PORT = '5432'
-    # DB_NAME = 'postgres'
-    
-    # For Supabase database (Online)
     DB_ENGINE = 'postgresql'
-    DB_USERNAME = 'postgres.awgqqxtyhkvcstfkikan'
-    DB_PASS = 'VirusDB25625'
-    DB_HOST = 'aws-0-us-west-1.pooler.supabase.com'
+    DB_USERNAME = 'postgres'
+    DB_PASS = 'virus'
+    DB_HOST = 'localhost'
     DB_PORT = '5432'
     DB_NAME = 'postgres'
+    
+    # For Supabase database (Online)
+    # DB_ENGINE = 'postgresql'
+    # DB_USERNAME = 'postgres.awgqqxtyhkvcstfkikan'
+    # DB_PASS = 'VirusDB25625'
+    # DB_HOST = 'aws-0-us-west-1.pooler.supabase.com'
+    # DB_PORT = '5432'
+    # DB_NAME = 'postgres'
 
     if DB_ENGINE and DB_NAME and DB_USERNAME:
 

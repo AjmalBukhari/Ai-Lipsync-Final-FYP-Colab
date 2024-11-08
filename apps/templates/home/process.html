@@ -3,7 +3,25 @@
 {% block title %} Process {% endblock %}
 
 {% block stylesheets %}
+<style>
+  .magic-wand {
+    position: relative;
+    width: 35%;
+    height: 25%;
+    margin: 40px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-origin: center;
+  }
 
+  .wand-gif {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+</style>
 {% endblock %}
 
 {% block content %}
@@ -12,7 +30,11 @@
     <div class="col-md-12">
       <div class="card card-plain">
         <div class="card-header">
-          <h2>Processing, please wait...</h2>
+          <h2 class="lipsync-text">Processing Lip-Sync, please wait...</h2>
+          <h5 class="lipsync-text">Stay on this page, you will redirect to preview page after process is completed.</h5>
+          <div class="magic-wand">
+            <img src="https://i.gifer.com/SCmX.gif" alt="Magic Wand Animation" class="wand-gif">
+          </div>
         </div>
       </div>
     </div>
