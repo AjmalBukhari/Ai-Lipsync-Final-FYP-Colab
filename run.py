@@ -5,9 +5,6 @@ from sys import exit
 
 from apps.config import config_dict
 from apps import create_app, db
-from pyngrok import ngrok
-
-import subprocess, logging
 
 
 # WARNING: Don't run with debug turned on in production!
