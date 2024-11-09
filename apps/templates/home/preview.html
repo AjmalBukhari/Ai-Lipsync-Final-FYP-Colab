@@ -126,33 +126,33 @@
     animation: rotate 3s ease-in-out 0.4s forwards;
   }
 
-  .label .input:checked + .circle {
+  .label .input:checked+.circle {
     animation:
       pulse 1s forwards,
       circleDelete 0.2s ease 3.5s forwards;
     rotate: 180deg;
   }
 
-  .label .input:checked + .circle::before {
+  .label .input:checked+.circle::before {
     animation: installing 3s ease-in-out forwards;
   }
 
-  .label .input:checked + .circle .icon {
+  .label .input:checked+.circle .icon {
     opacity: 0;
     visibility: hidden;
   }
 
-  .label .input:checked ~ .circle .square {
+  .label .input:checked~.circle .square {
     opacity: 1;
     visibility: visible;
   }
 
-  .label .input:checked ~ .title {
+  .label .input:checked~.title {
     opacity: 0;
     visibility: hidden;
   }
 
-  .label .input:checked ~ .title:last-child {
+  .label .input:checked~.title:last-child {
     animation: showInstalledMessage 0.4s ease 3.5s forwards;
   }
 
@@ -161,10 +161,12 @@
       scale: 0.95;
       box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
     }
+
     70% {
       scale: 1;
       box-shadow: 0 0 0 16px rgba(255, 255, 255, 0);
     }
+
     100% {
       scale: 0.95;
       box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
@@ -175,6 +177,7 @@
     from {
       height: 0;
     }
+
     to {
       height: 100%;
     }
@@ -186,11 +189,13 @@
       opacity: 1;
       visibility: visible;
     }
+
     99% {
       transform: rotate(270deg) translate(27px) rotate(270deg);
       opacity: 1;
       visibility: visible;
     }
+
     100% {
       opacity: 0;
       visibility: hidden;
@@ -232,30 +237,32 @@
         <div class="card-body">
           <div class="video-container">
             {% if video_url %}
-              <video controls width="600" height="450" class="rounded">
-                <source src="{{ video_url }}" type="video/mp4">
-                Your browser does not support the video tag.
-              </video>
+            <video controls width="600" height="450" class="rounded">
+              <source src="{{ video_url }}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
             {% else %}
-              <p>No video available for preview.</p>
+            <p>No video available for preview.</p>
             {% endif %}
           </div>
           <div class="buttons mt-3">
             <a href="/lipsync" class="btn btn-secondary">Re-process</a>
             {% if video_url %}
-              <div class="container">
-                <label class="label">
-                  <input type="checkbox" class="input" id="downloadToggle" />
-                  <span class="circle">
-                    <svg class="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19V5m0 14-4-4m4 4 4-4"></path>
-                    </svg>
-                    <div class="square"></div>
-                  </span>
-                  <p class="title">Download</p>
-                  <p class="title">Complete</p>
-                </label>
-              </div>
+            <div class="container">
+              <label class="label">
+                <input type="checkbox" class="input" id="downloadToggle" />
+                <span class="circle">
+                  <svg class="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                      d="M12 19V5m0 14-4-4m4 4 4-4"></path>
+                  </svg>
+                  <div class="square"></div>
+                </span>
+                <p class="title">Download</p>
+                <p class="title">Complete</p>
+              </label>
+            </div>
             {% endif %}
           </div>
         </div>
@@ -271,40 +278,37 @@
 {% block javascripts %}
 
 <script>
-  // Declare the downloadInProgress variable at the beginning of the script
-  let downloadInProgress = false; // Flag to track download state
+
+  let downloadInProgress = false;
   const downloadToggle = document.getElementById('downloadToggle');
 
-  // Add event listener to the checkbox
-  downloadToggle.addEventListener('change', function() {
+  downloadToggle.addEventListener('change', function () {
     if (this.checked) {
-      // Check if a download is already in progress
-      if (!downloadInProgress) {
-        downloadInProgress = true; // Set flag to true
-        const animationDuration = 3000; // Duration in milliseconds
-        setTimeout(() => {
-          // Create a temporary anchor element for downloading
-          const link = document.createElement('a');
-          link.href = "{{ video_url }}"; // Set the href to the video URL
-          link.download = ''; // Use download attribute to trigger download
-          document.body.appendChild(link); // Append the link to the body
-          link.click(); // Simulate a click on the link to trigger the download
-          document.body.removeChild(link); // Remove the link from the body
 
-          // Redirect to feedback page after 5 seconds
+      if (!downloadInProgress) {
+        downloadInProgress = true;
+        const animationDuration = 3000;
+        
+        setTimeout(() => {
+
+          const link = document.createElement('a');
+          link.href = "{{ video_url }}";
+          link.download = '';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
           setTimeout(() => {
-            window.location.href = "/feedback"; // Redirect to feedback page
+            window.location.href = "/feedback";
           }, 2000);
 
-          downloadInProgress = false; // Reset the flag after download
-        }, animationDuration); // Delay the download by the duration of the animation
+          downloadInProgress = false;
+        }, animationDuration);
       } else {
-        // If already downloading, toggle the state
-        this.checked = false; // Uncheck the checkbox
+        this.checked = false;
         alert("Download canceled.");
       }
     } else {
-      // If unchecked, reset the flag
       downloadInProgress = false;
     }
   });

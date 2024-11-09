@@ -1,5 +1,5 @@
 from apps.home import blueprint
-from flask import render_template, request, current_app, send_from_directory, flash, redirect, url_for
+from flask import render_template, request, current_app, send_from_directory, flash, redirect, url_for, jsonify
 from flask_login import login_required
 from apps.authentication.routes import current_user, log_user_action
 from apps.authentication.models import Feedback
@@ -11,7 +11,7 @@ import shutil
 from moviepy.editor import VideoFileClip
 from pydub import AudioSegment
 from werkzeug.utils import secure_filename
-import threading
+import threading, glob
 
 
 # Route to render templates dynamically
@@ -60,6 +60,25 @@ def convert_audio(input_path, output_path):
         audio.export(output_path, format='mp3')
     except Exception as e:
         flash(f"Error converting audio: {e}")
+
+
+def delete_all_files_in_procees_directory(directory):
+    # Check if the directory exists
+    if os.path.exists(directory):
+        # Use glob to find all files in the directory
+        files = glob.glob(os.path.join(directory, "*"))
+        
+        for file_path in files:
+            try:
+                # Delete each file in the directory
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+                    print(f"Deleted file: {file_path}")
+            except Exception as e:
+                print(f"Error deleting file {file_path}: {e}")
+    else:
+        print("Directory does not exist.")
+
 
 # Home Page
 @blueprint.route('/index', methods=['GET'])
@@ -204,14 +223,14 @@ def trim_media():
     output_filename = request.form.get('output_filename')
     model_type = request.form.get('model_type')
 
-    trim_dir, temp_dir, output_dir = (
+    trim_dir, temp_dir, process_dir = (
         get_user_directory(username, 'trim'),
         get_user_directory(username, 'temp'),
-        get_user_directory(username, 'output')
+        get_user_directory(username, 'process')
     )
     temp_video_path = os.path.join(temp_dir, 'temp_uploaded_video.mp4')
     temp_audio_path = os.path.join(temp_dir, 'temp_uploaded_audio.mp3')
-    output_path = os.path.join(output_dir, f"{output_filename}.mp4")
+    process_path = os.path.join(process_dir, f"{output_filename}.mp4")
 
     ensure_directory_exists(trim_dir)
 
@@ -225,40 +244,57 @@ def trim_media():
     log_user_action(username, "trimmed video and audio successfully.")
 
     processing_status[username] = 'processing'
-    thread = threading.Thread(target=start_lipsync, args=(trimmed_video_path, trimmed_audio_path, output_path, model_type, padding_top, padding_left, padding_bottom, padding_right, username))
+    thread = threading.Thread(target=start_lipsync, args=(trimmed_video_path, trimmed_audio_path, temp_dir, process_path, model_type, padding_top, padding_left, padding_bottom, padding_right, username))
     thread.start()
 
     return redirect(url_for('home_blueprint.process'))
 
-@blueprint.route('/process')
+
+@blueprint.route('/process_status')
 @login_required
-def process():
+def process_status():
     username = current_user.username
     status = processing_status.get(username, 'not started')
 
     if status == 'completed':
         del processing_status[username]
-        return redirect(url_for('home_blueprint.preview'))
+        print("Complete")
+        return jsonify({'status': 'completed'})
     elif status == 'error':
-        flash("An error occurred during processing. Please try again.", "danger")
         del processing_status[username]
-        return redirect(url_for('home_blueprint.route_template', template='lipsync'))
+        print("Error")
+        return jsonify({'status': 'error'})
+    print("processing.......")
+    return jsonify({'status': 'in_progress'})
 
-    return render_template('home/process.html', status=status)
+@blueprint.route('/process')
+@login_required
+def process():
+    username = current_user.username
 
-def start_lipsync(trimmed_video_path, trimmed_audio_path, output_path, model_type, padding_top, padding_left, padding_bottom, padding_right, username):
+    return render_template('home/process.html')
+
+def start_lipsync(trimmed_video_path, trimmed_audio_path, process_path, model_type, padding_top, padding_left, padding_bottom, padding_right, username):
+    
     try:
         model_path = 'models/wav2lip.pth' if model_type == 'wav2lip' else 'models/wav2lip_gan.pth'
-        
+
+        delete_all_files_in_procees_directory(process_path)
+
         subprocess.run(
             ["python", "apps/wav2lip/inference.py", 
              "--checkpoint_path", model_path, 
              "--face", trimmed_video_path,
              "--audio", trimmed_audio_path, 
-             "--outfile", output_path, 
+             "--outfile", process_path,
              "--pads", padding_top, padding_left, padding_bottom, padding_right],
             check=True
         )
+
+        # subprocess.run(
+        #     ["notepad"],
+        #     check=True
+        # )
         print("Lipsync process completed successfully.")
         processing_status[username] = 'completed'
     except subprocess.CalledProcessError as e:
@@ -269,7 +305,7 @@ def start_lipsync(trimmed_video_path, trimmed_audio_path, output_path, model_typ
 @login_required
 def preview():
     username = current_user.username
-    output_dir = get_user_directory(username, 'output')
+    output_dir = get_user_directory(username, 'process')
 
     video_file = next((file for file in os.listdir(output_dir) if file.endswith(('.mp4', '.avi', '.mov', '.mkv'))), None)
     video_url = f"/video/{username}/{video_file}" if video_file else None
@@ -280,7 +316,7 @@ def preview():
 @blueprint.route('/video/<username>/<filename>')
 @login_required
 def serve_video(username, filename):
-    output_dir = get_user_directory(username, 'output')
+    output_dir = get_user_directory(username, 'process')
     return send_from_directory(output_dir, filename)
 
 

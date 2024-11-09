@@ -41,12 +41,13 @@ def login():
             video_dir = user_dir / "video"
             audio_dir = user_dir / "audio"
             output_dir = user_dir / "output"
+            process_dir = user_dir / "process"
             trim_dir = user_dir / "trim"
             logs_dir = user_dir / "logs"
             profile_dir = user_dir / "profile"
             dp_dir = profile_dir / "dp"
         
-            for directory in [base_dir, user_dir, video_dir, audio_dir, output_dir, trim_dir, logs_dir, profile_dir, dp_dir]:
+            for directory in [base_dir, user_dir, video_dir, audio_dir, output_dir, process_dir, trim_dir, logs_dir, profile_dir, dp_dir]:
                 directory.mkdir(parents=True, exist_ok=True)
             
             log_file = logs_dir / "log.txt"

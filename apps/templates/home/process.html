@@ -20,7 +20,6 @@
     height: auto;
     display: block;
   }
-
 </style>
 {% endblock %}
 
@@ -42,3 +41,28 @@
 </div>
 
 {% endblock content %}
+
+{% block javascripts %}
+
+<script>
+  function checkProcessStatus() {
+    fetch("{{ url_for('home_blueprint.process_status') }}")
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'completed') {
+          window.location.href = "{{ url_for('home_blueprint.preview') }}";
+        } else if (data.status === 'error') {
+          alert("An error occurred during processing. Please try again.");
+          window.location.href = "{{ url_for('home_blueprint.route_template', template='lipsync') }}";
+        } else {
+          // Continue polling if still in progress
+          setTimeout(checkProcessStatus, 2000); // Check every 2 seconds
+        }
+      });
+  }
+
+  // Start polling when the page loads
+  document.addEventListener("DOMContentLoaded", checkProcessStatus);
+</script>
+
+{% endblock %}
