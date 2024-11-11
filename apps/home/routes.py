@@ -358,6 +358,6 @@ def feedback():
         db.session.commit()
 
         flash('Thank you for your feedback!', 'success')
-        return redirect(url_for('home_blueprint.feedback'))
+        return redirect(url_for('home_blueprint.index'))
 
     return render_template("home/feedback.html")
