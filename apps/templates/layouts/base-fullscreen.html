@@ -25,8 +25,33 @@
     <!-- Specific Page CSS goes HERE  -->
     {% block stylesheets %}{% endblock stylesheets %}
 
+    <style>
+        .flash-popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 250px;
+        }
+    </style>
+
 </head>
 <body class="">
+
+    <div class="flash-popup">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
 
     <div class="wrapper">
 
@@ -46,6 +71,13 @@
 
     <!-- Specific Page JS goes HERE  -->
     {% block javascripts %}{% endblock javascripts %}
+
+    <script>
+        // Auto-dismiss flash messages after 3 seconds
+        setTimeout(function () {
+            $('.flash-popup .alert').alert('close');
+        }, 3000);
+    </script>
 
 </body>
 </html>
