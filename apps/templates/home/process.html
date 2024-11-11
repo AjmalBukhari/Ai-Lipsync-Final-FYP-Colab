@@ -56,7 +56,7 @@
           window.location.href = "{{ url_for('home_blueprint.route_template', template='lipsync') }}";
         } else {
           // Continue polling if still in progress
-          setTimeout(checkProcessStatus, 2000); // Check every 2 seconds
+          setTimeout(checkProcessStatus, 10000); // Check every 10 seconds
         }
       });
   }
