@@ -47,4 +47,16 @@ ninja
 einops
 facexlib
 gradio
+enhance
+
+batch-face
+dlib
+
+gdown
+gfpgan
+imageio-ffmpeg
+importlib-metadata
+ipython
+
+scipy
 
