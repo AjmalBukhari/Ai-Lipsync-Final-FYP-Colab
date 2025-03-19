@@ -250,8 +250,20 @@ def trim_media():
     trimmed_audio_path = os.path.join(trim_dir, 'trimmed_audio.mp3')
 
     # Perform video and audio trimming
-    subprocess.run(['ffmpeg', '-i', temp_video_path, '-ss', start_time, '-to', end_time, '-c', 'copy', trimmed_video_path, '-y'], check=True)
-    subprocess.run(['ffmpeg', '-i', temp_audio_path, '-ss', start_time, '-to', end_time, '-c', 'copy', trimmed_audio_path, '-y'], check=True)
+    # subprocess.run(['ffmpeg', '-i', temp_video_path, '-ss', start_time, '-to', end_time, '-c', 'copy', trimmed_video_path, '-y'], check=True)
+    # subprocess.run(['ffmpeg', '-i', temp_audio_path, '-ss', start_time, '-to', end_time, '-c', 'copy', trimmed_audio_path, '-y'], check=True)
+
+    # Perform video trimming
+    subprocess.run(
+        ['ffmpeg', '-i', temp_video_path, '-ss', start_time, '-to', end_time, '-c:v', 'libx264', '-preset', 'fast', '-c:a', 'aac', '-strict', 'experimental', trimmed_video_path, '-y'], 
+        check=True
+    )
+
+    # Perform audio trimming
+    subprocess.run(
+        ['ffmpeg', '-i', temp_audio_path, '-ss', start_time, '-to', end_time, '-c:a', 'pcm_s16le', trimmed_audio_path, '-y'], 
+        check=True
+    )
 
     flash("Video and audio trimmed successfully.", "success")
     log_user_action(username, "trimmed video and audio successfully.")
