@@ -272,7 +272,17 @@ def trim_media():
     processing_status[username] = 'processing'
     thread = threading.Thread(
         target=start_lipsync,
-        args=(trimmed_video_path, trimmed_audio_path, process_path, model_type, padding_top, padding_left, padding_bottom, padding_right, username)
+        args=(
+            trimmed_video_path, 
+            trimmed_audio_path, 
+            process_path, 
+            model_type, 
+            padding_top, 
+            padding_left, 
+            padding_bottom, 
+            padding_right, 
+            username
+        )
     )
     thread.start()
 
@@ -315,13 +325,16 @@ def start_lipsync(trimmed_video_path, trimmed_audio_path, process_path, model_ty
 
         delete_all_files_in_process_directory(process_path)
 
+        # Construct the --pads argument using the padding values
+        pads = f"{padding_top},{padding_left},{padding_bottom},{padding_right}"
+
         subprocess.run(
             ["python", "apps/wav2lip/inference.py", 
              "--checkpoint_path", model_path, 
              "--face", trimmed_video_path,
              "--audio", trimmed_audio_path, 
              "--outfile", process_path,
-             "--pads", padding_top, padding_left, padding_bottom, padding_right],
+             "--pads", pads],
             check=True
         )
 
