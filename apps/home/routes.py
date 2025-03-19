@@ -231,6 +231,12 @@ def trim_media():
     output_filename = request.form.get('output_filename')
     model_type = request.form.get('model_type')
 
+    padding_top = int(padding_top) if padding_top else 0
+    padding_left = int(padding_left) if padding_left else 0
+    padding_bottom = int(padding_bottom) if padding_bottom else 0
+    padding_right = int(padding_right) if padding_right else 0
+
+
     # Define user directories
     trim_dir, temp_dir, process_dir = (
         get_user_directory(username, 'trim'),
